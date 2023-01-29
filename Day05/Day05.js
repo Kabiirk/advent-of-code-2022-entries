@@ -67,25 +67,44 @@ function create_moves(moves_input){
     return moves;
 }
 
-const stacks = create_stack(stack_input);
+let stacks = create_stack(stack_input);
 const moves = create_moves(moves_input);
 
-// console.log(moves);
-// console.log(stacks);
+function top_crates(stacks, moves, part){
+    for(let m=0; m<moves.length; m++){
+        let num_crates = moves[m][0];
+        let from_stack = moves[m][1];
+        let to_stack = moves[m][2];
 
-function print_stack(stacks){
-    for(let i=0; i<stacks.length; i++){
-        console.log(stacks[i]);
+        let moved_crates = stacks[from_stack-1].splice(stacks[from_stack-1].length-num_crates, num_crates);
+        if(part===1){
+            stacks[to_stack-1] = stacks[to_stack-1].concat(moved_crates.reverse())
+        }
+        else if(part===2){
+            stacks[to_stack-1] = stacks[to_stack-1].concat(moved_crates)
+        }
     }
+
+    print_stack(stacks, only_top=true);
+}
+
+function print_stack(stacks, only_top=false){
+    var result = "";
+    for(let i=0; i<stacks.length; i++){
+        if(!only_top){
+            result+= "[ "+stacks[i].join(", ")+" ]\n";
+        }
+        else{
+            // console.log(i+1, stacks[i][stacks[i].length-1]);
+            result+=stacks[i][stacks[i].length-1].toString();
+        }
+    }
+    console.log(result);
 }
 
 // Part 1
-function top_crates(stacks, moves){
-    for(let m=0; m<moves.length; m++){
-        let num_crates = moves[m][0];
-        let from_stack = moves[m][0];
-        let to_stack = moves[m][0];
-    }
-}
+top_crates(stacks, moves, 1); // PTWLTDSJV
 
-print_stack(stacks)
+// Part 2
+let stacks2 = create_stack(stack_input); // Because JS is mutating Stacks array after Solving Part1
+top_crates(stacks2, moves, 2); // WZMFVGGZP
