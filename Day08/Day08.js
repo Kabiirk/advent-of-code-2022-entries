@@ -27,18 +27,21 @@ function check_line(y, x, tree){
     var left = true;// x,y->left
     var right = true;//// x,y->right
     // check top
+    console.log("TOP");
     for(var t=y-1; t>=0; t--){
         console.log("Iter:", t,x, " Coords:",tree[t][x], tree[y][x])
         // if(tree[t][x]>tree[y][x]){
         //     top = false;
         // }
     }
-    // // check bottom
-    // for(var b=y+1; b<=tree.length; b++){
-    //     if(tree[b][x]>tree[y][x]){
-    //         bottom = false;
-    //     }
-    // }
+    // check bottom
+    console.log("BOTTOM");
+    for(var b=y+1; b<=tree.length; b++){
+        console.log("Iter:", b,x, " Coords:",tree[b], tree[y])
+        // if(tree[b][x]>tree[y][x]){
+        //     bottom = false;
+        // }
+    }
     // // Check left
     // for(var l=x-1; l>=0; l--){
     //     if(tree[y][l]>tree[y][x]){
@@ -62,7 +65,7 @@ function visible_tree_count(tree_grid){
 }
 
 console.log(test);
-console.log(check_line(3,3,test));
+console.log(check_line(2,2,test));
 
 // console.log(test)
 // console.log(input);
