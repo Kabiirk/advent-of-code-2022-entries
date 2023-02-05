@@ -43,11 +43,12 @@ function check_line(y, x, tree){
         // }
     }
     // // Check left
-    // for(var l=x-1; l>=0; l--){
-    //     if(tree[y][l]>tree[y][x]){
-    //         left = false;
-    //     }
-    // }
+    for(var l=x-1; l>=0; l--){
+        console.log("Iter:", b,x, " Coords:",tree[b], tree[y])
+        // if(tree[y][l]>tree[y][x]){
+        //     left = false;
+        // }
+    }
     // // Check right
     // for(var r=x+1; r<=tree.length; r++){
     //     if(tree[y][r]>tree[y][x]){
