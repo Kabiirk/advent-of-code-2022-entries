@@ -36,7 +36,7 @@ function check_line(y, x, tree){
     }
     // check bottom
     console.log("BOTTOM");
-    for(var b=y+1; b<=tree.length; b++){
+    for(var b=y+1; b<tree.length; b++){
         console.log("Iter:", b,x, " Coords:",tree[b], tree[y])
         // if(tree[b][x]>tree[y][x]){
         //     bottom = false;
@@ -44,7 +44,7 @@ function check_line(y, x, tree){
     }
     // // Check left
     for(var l=x-1; l>=0; l--){
-        console.log("Iter:", b,x, " Coords:",tree[b], tree[y])
+        // console.log("Iter:", y,l, " Coords:",tree[b], tree[y])
         // if(tree[y][l]>tree[y][x]){
         //     left = false;
         // }
