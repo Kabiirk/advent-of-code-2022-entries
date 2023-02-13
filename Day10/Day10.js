@@ -158,6 +158,12 @@ test = test.split("\n");
 
 // console.log(test);
 
+function check_cycle(cycle, X, signal_strengths){
+    if( (cycle===20) || ( (cycle-20)%40===0) ){
+        signal_strengths.push( cycle*X );
+    }
+}
+
 function add_signal_strengths(program){
     var cycle = 0;
     var X = 1;
@@ -167,18 +173,25 @@ function add_signal_strengths(program){
         var instruction = components[0];
         if(instruction==="noop"){
             cycle++;
+            check_cycle(cycle, X, signal_strengths);
         }
         else{
-            var value = components[1];
-            X+=Number(value);
-            cycle+=2;
-        }
-        if( (cycle===20) || ( (cycle-20)%40 ===0) ){
-            signal_strengths.push( cycle*X );
-            console.log(cycle*X);
+            cycle++;
+            check_cycle(cycle, X, signal_strengths);
+            cycle++;
+            check_cycle(cycle, X, signal_strengths);
+            // var value = components[1];
+            X+=Number(components[1]);
         }
     }
-    console.log(signal_strengths);
+    return signal_strengths;
 }
 
-add_signal_strengths(test);
+// Part 1
+var sum_signal_strengths = add_signal_strengths(input)
+                        .reduce(
+                            function (x, y){
+                                return x+y;
+                            }, 0);
+
+console.log(sum_signal_strengths);
