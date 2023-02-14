@@ -187,6 +187,33 @@ function add_signal_strengths(program){
     return signal_strengths;
 }
 
+function update_sprite(cycle, X, sprite_pos){
+    console.log(X);
+}
+
+function draw_sprite(program, crt_screen){
+    var cycle = 0;
+    var X = 1;
+    var sprite_pos = [0, 1, 2];
+    for(let line of program){
+        var components = line.split(" ");
+        var instruction = components[0];
+        if(instruction==="noop"){
+            cycle++;
+            update_sprite(cycle, X, sprite_pos);
+        }
+        else{
+            cycle++;
+            update_sprite(cycle, X, sprite_pos);
+            cycle++;
+            update_sprite(cycle, X, sprite_pos);
+            // var value = components[1];
+            X+=Number(components[1]);
+        }
+    }
+    console.log("CRT")
+}
+
 // Part 1
 var sum_signal_strengths = add_signal_strengths(input)
                         .reduce(
@@ -195,3 +222,15 @@ var sum_signal_strengths = add_signal_strengths(input)
                             }, 0);
 
 console.log(sum_signal_strengths);
+
+// Part 2
+var crt_screen = [
+                    "########################################".split(''),
+                    "########################################".split(''),
+                    "########################################".split(''),
+                    "########################################".split(''),
+                    "########################################".split(''),
+                    "########################################".split('')
+                        ]
+// console.log(crt_screen);
+draw_sprite(test, crt_screen);
