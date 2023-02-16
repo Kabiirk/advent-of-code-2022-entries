@@ -188,7 +188,24 @@ function add_signal_strengths(program){
 }
 
 function update_sprite(cycle, X, sprite_pos){
-    console.log(X);
+    if(cycle>=1 || cycle<=40){
+        sprite[0]=".";
+    }
+    if(cycle>=41 || cycle<=80){
+        sprite[1]=".";
+    }
+    if(cycle>=81 || cycle<=120){
+        sprite[2]=".";
+    }
+    if(cycle>=121 || cycle<=160){
+        sprite[3]=".";
+    }
+    if(cycle>=161 || cycle<=200){
+        sprite[4]=".";
+    }
+    if(cycle>=201 || cycle<=240){
+        sprite[5]=".";
+    }
 }
 
 function draw_sprite(program, crt_screen){
