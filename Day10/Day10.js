@@ -189,7 +189,9 @@ function add_signal_strengths(program){
 
 function update_sprite(cycle, X, sprite_pos){
     if(cycle>=1 || cycle<=40){
-        sprite[0]=".";
+        if(cycle in [X, X+1, X+2]){
+            return 0;
+        }
     }
     if(cycle>=41 || cycle<=80){
         sprite[1]=".";
