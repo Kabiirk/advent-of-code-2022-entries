@@ -182,6 +182,7 @@ function add_signal_strengths(program){
             check_cycle(cycle, X, signal_strengths);
             // var value = components[1];
             X+=Number(components[1]);
+            console.log(X);
         }
     }
     return signal_strengths;
@@ -189,7 +190,7 @@ function add_signal_strengths(program){
 
 function update_sprite(cycle, X, sprite_pos){
     if(cycle>=1 || cycle<=40){
-        if(cycle in [X, X+1, X+2]){
+        if([X, X+1, X+2].includes()){
             return 0;
         }
     }
@@ -210,6 +211,13 @@ function update_sprite(cycle, X, sprite_pos){
     }
 }
 
+function check_cycle(cycle, sprite_pos){
+    reset_list = [1, 41, 81, 121, 161, 201]
+    if(reset_list.includes(cycle)){
+        sprite_pos = [0, 1, 2];
+    }
+}
+
 function draw_sprite(program, crt_screen){
     var cycle = 0;
     var X = 1;
@@ -219,15 +227,17 @@ function draw_sprite(program, crt_screen){
         var instruction = components[0];
         if(instruction==="noop"){
             cycle++;
-            update_sprite(cycle, X, sprite_pos);
+            draw_crt();
+            check_cycle(cycle, sprite_pos);
         }
         else{
             cycle++;
-            update_sprite(cycle, X, sprite_pos);
+            check_cycle(cycle, sprite_pos);
             cycle++;
-            update_sprite(cycle, X, sprite_pos);
+            update_sprite(cycle, sprite_pos);
             // var value = components[1];
             X+=Number(components[1]);
+            check_cycle(cycle, sprite_pos);
         }
     }
     console.log("CRT")
