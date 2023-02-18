@@ -182,9 +182,9 @@ function add_signal_strengths(program){
             check_cycle(cycle, X, signal_strengths);
             // var value = components[1];
             X+=Number(components[1]);
-            console.log(X);
         }
     }
+
     return signal_strengths;
 }
 
@@ -208,13 +208,6 @@ function update_sprite(cycle, X, sprite_pos){
     }
     if(cycle>=201 || cycle<=240){
         sprite[5]=".";
-    }
-}
-
-function check_cycle(cycle, sprite_pos){
-    reset_list = [1, 41, 81, 121, 161, 201]
-    if(reset_list.includes(cycle)){
-        sprite_pos = [0, 1, 2];
     }
 }
 
@@ -243,6 +236,68 @@ function draw_sprite(program, crt_screen){
     console.log("CRT")
 }
 
+// New Approach
+function adjust_row_col(cycle, row, column){
+    var reset_list = [0, 40, 80, 120, 160, 200]
+    if(reset_list.includes(cycle)){
+        column = reset_list.indexOf(cycle);
+        row = 0;
+    }
+    return [row, column];
+}
+
+function draw_pixel(cycle, sprite_pos, r, c){
+    if(sprite_pos.includes(cycle)){
+        return [r, c, "#"];
+    }
+    else{
+        return [r, c, "."];
+    }
+}
+
+function draw_crt(program, crt_screen){
+    var cycle = 0;
+    var X = 1;
+    var sprite_pos = [0, 1, 2];
+    var column = 0;
+    var row = 0;
+    for(let line of program){
+        var components = line.split(" ");
+        var instruction = components[0];
+        if(instruction==="noop"){
+            cycle++;
+            row++
+            var temp = adjust_row_col(cycle, row, column);
+            row = temp[0];
+            column = temp[1];
+            var temp2 = draw_pixel(cycle, sprite_pos, row, column);
+            crt_screen[temp[1]][temp[0]] = temp[2];
+        }
+        else{
+            cycle++;
+            row++;
+            var temp = adjust_row_col(cycle, row, column);
+            row = temp[0];
+            column = temp[1];
+            var temp2 = draw_pixel(cycle, sprite_pos, row, column);
+            crt_screen[temp[1]][temp[0]] = temp[2];
+            cycle++;
+            row++;
+            var temp = adjust_row_col(cycle, row, column);
+            row = temp[0];
+            column = temp[1];
+            var temp2 = draw_pixel(cycle, sprite_pos, row, column);
+            crt_screen[temp[1]][temp[0]] = temp[2];
+            X+=Number(components[1]);
+            sprite_pos = [X-1, X, X+1];
+        }
+    }
+    // return signal_strengths;
+}
+
+
+//
+
 // Part 1
 var sum_signal_strengths = add_signal_strengths(input)
                         .reduce(
@@ -250,7 +305,7 @@ var sum_signal_strengths = add_signal_strengths(input)
                                 return x+y;
                             }, 0);
 
-console.log(sum_signal_strengths);
+console.log(sum_signal_strengths);// 13220
 
 // Part 2
 var crt_screen = [
@@ -262,4 +317,7 @@ var crt_screen = [
                     "########################################".split('')
                         ]
 // console.log(crt_screen);
-draw_sprite(test, crt_screen);
+// draw_sprite(test, crt_screen);
+draw_crt(test, crt_screen);
+console.log(crt_screen);
+var s = 0;
