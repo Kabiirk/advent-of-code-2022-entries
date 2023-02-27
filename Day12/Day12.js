@@ -39,7 +39,9 @@ console.log(terrain);
 
 function bfs(start, end){
     const visited = new Set();
-    const queue = [[]]
+    const queue = [];
+
+    queue.push([terrain.start]);
 }
 
 var s = 0;
