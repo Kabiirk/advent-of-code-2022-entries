@@ -35,7 +35,16 @@ function parse_input(input_graph){
 }
 
 const terrain = parse_input(input);
-console.log(terrain);
+// console.log(terrain);
+
+var test = `Sabqponm
+abcryxxl
+accszExk
+acctuvwj
+abdefghi`
+
+const test_terrain = parse_input(test);
+console.log(test_terrain);
 
 function bfs(start, end){
     const visited = new Set();
