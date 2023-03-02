@@ -34,18 +34,6 @@ function parse_input(input_graph){
     return terrain;
 }
 
-const terrain = parse_input(input);
-// console.log(terrain);
-
-var test = `Sabqponm
-abcryxxl
-accszExk
-acctuvwj
-abdefghi`
-
-const test_terrain = parse_input(test);
-// console.log(test_terrain);
-
 function traverse(terrain){
     const visited = new Set();
     const queue = [];
@@ -88,11 +76,59 @@ function traverse(terrain){
     }
 }
 
+function reverse_traverse(terrain){
+    const visited = new Set();
+    const queue = [];
+
+    // initialization
+    queue.push([terrain.end[0], terrain.end[1], 0]);
+    visited.add(`${terrain.end[0]},${terrain.end[1]}`)
+
+    while(queue.length){
+        const [r, c, d] = queue.shift();
+
+        // immediate neighbors
+        const next = [
+            [r+1, c],
+            [r-1, c],
+            [r, c+1],
+            [r, c-1]
+        ]
+
+        for(let i=0; i<next.length; i++){
+            const nr = next[i][0];
+            const nc = next[i][1];
+
+            if(nr<0 || nc<0 || nr>=terrain.dem.length || nc>=terrain.dem[0].length){
+                continue;
+            }
+            if(visited.has(`${nr},${nc}`)){
+                continue;
+            }
+            if(terrain.dem[nr][nc] - terrain.dem[r][c] < -1){
+                continue;
+            }
+            if(terrain.dem[nr][nc]===1){
+                return d+1;
+            }
+
+            visited.add(`${nr},${nc}`);
+            queue.push([nr, nc, d+1]);
+        }
+    }
+}
+
+const terrain = parse_input(input);
+
 // Part 1
 var fewest_steps = traverse(terrain);
 console.log(fewest_steps);// 472
 
 // Part 2
-
+// Instead of going from all a's to E iteratively to
+// find shortest route,
+// We go from E to nearest a.
+var fewest_steps_to_a = reverse_traverse(terrain);
+console.log(fewest_steps_to_a);// 465
 
 var s = 0;
