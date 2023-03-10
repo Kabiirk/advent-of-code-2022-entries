@@ -18,7 +18,6 @@ function parse(input_string){
             coords.push([x, y])
         }
 
-        // console.log(coords);
         for (let i = 1; i < coords.length; i++) {
             const [cx, cy] = coords[i];
             // Previous coords
@@ -73,7 +72,7 @@ const simulate_sand = (filled, max_y) => {
     return false;
 }
 
-// Part 2
+// for Part 2
 const simulate_sand_with_floor = (filled_2, max_y2) => {
     // Sand Fall Origin
     let [x, y] = [500, 0]
