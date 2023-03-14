@@ -7,28 +7,11 @@ const input = fs
     .trim()
     .split('\n');
 
-
-var test = `Sensor at x=2, y=18: closest beacon is at x=-2, y=15
-Sensor at x=9, y=16: closest beacon is at x=10, y=16
-Sensor at x=13, y=2: closest beacon is at x=15, y=3
-Sensor at x=12, y=14: closest beacon is at x=10, y=16
-Sensor at x=10, y=20: closest beacon is at x=10, y=16
-Sensor at x=14, y=17: closest beacon is at x=10, y=16
-Sensor at x=8, y=7: closest beacon is at x=2, y=10
-Sensor at x=2, y=0: closest beacon is at x=2, y=10
-Sensor at x=0, y=11: closest beacon is at x=2, y=10
-Sensor at x=20, y=14: closest beacon is at x=25, y=17
-Sensor at x=17, y=20: closest beacon is at x=21, y=22
-Sensor at x=16, y=7: closest beacon is at x=15, y=3
-Sensor at x=14, y=3: closest beacon is at x=15, y=3
-Sensor at x=20, y=1: closest beacon is at x=15, y=3`
-
-test = test.trim().split('\n');
-
 function parse_input(input_strings){
     let pattern = /-?\d{1,10}/g;
 
     const sensor_layout = []
+    let beacons_set = new Set();
 
     for(var input_string of input_strings){
         var pattern_matches = input_string.match(pattern).map(Number);
@@ -36,10 +19,41 @@ function parse_input(input_strings){
                                 "sensor": [pattern_matches[0], pattern_matches[1]],
                                 "beacon": [pattern_matches[2], pattern_matches[3]]
                             } )
+
+        beacons_set.add(`${pattern_matches[2]},${pattern_matches[3]}`);
     }
 
-    return sensor_layout;
+    return [sensor_layout, beacons_set];
 }
 
-var sensor_list = parse_input(input);
-console.log(sensor_list);
+function manhattan_distance(sensor, beacon){
+    /*
+    let 2 points be P1(x1, y1) & P2(x2, y2)
+    then manhattan_distance(P1, P2) = |x1 - x2| + |y1 - y2|
+    */
+    return Math.abs(sensor[0] - beacon[0]) + Math.abs(sensor[1] - beacon[1]);
+}
+
+function coverage_calculator(sensor_layout, beacons_set){
+    var y = 2000000;
+    var not_beacon = new Set();
+    for(s of sensor_layout){
+        var radius = manhattan_distance(s["sensor"], s["beacon"]);
+        var dist = Math.abs(s["sensor"][1] - y);
+        if(dist <= radius){
+            for (let i = s["sensor"][0] - (radius - dist); i <= s["sensor"][0] + (radius - dist); i++) {
+                if (!beacons_set.has(`${i},${y}`)){
+                    not_beacon.add(`${i},${y}`);
+                }
+            }
+        }
+    }
+
+    return not_beacon.size;
+}
+
+var [sensor_list, beacons] = parse_input(input);
+
+// Part 1
+var no_beacon_position = coverage_calculator(sensor_list, beacons);
+console.log(no_beacon_position)// 4876693
