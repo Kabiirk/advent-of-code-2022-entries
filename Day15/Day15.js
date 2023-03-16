@@ -54,6 +54,13 @@ function coverage_calculator(sensor_layout, beacons_set){
 
 var [sensor_list, beacons] = parse_input(input);
 
+var distances = []
+
+function tuning_freq(){
+    
+}
+
+
 // Part 1
 var no_beacon_position = coverage_calculator(sensor_list, beacons);
 console.log(no_beacon_position)// 4876693
