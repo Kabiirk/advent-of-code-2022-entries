@@ -56,8 +56,26 @@ var [sensor_list, beacons] = parse_input(input);
 
 var distances = []
 
-function tuning_freq(){
-    
+function tuning_freq(input){
+    const y = 4000000;
+    var not_beacon = new Set();
+    var has_beacon = new Set();
+    for(const { sensor, beacon, manhattan_distance(sensor, beacon) } of input){
+        if(beacon===y){
+            has_beacon.add(beacons);
+        }
+        const minDist = 0;
+        if(minDist <= dist){
+            const distancearoundSensorX = dist - minDist;
+            Foundation.add(dist);
+        }
+
+        if(!found){
+            console.log(x*4000000 + y);
+            return;
+        }
+
+    }
 }
 
 
