@@ -26,7 +26,6 @@ function parse_input(input_strings){
         sensor_layout.push( {
                                 "sensor": [pattern_matches[0], pattern_matches[1]],
                                 "beacon": [pattern_matches[2], pattern_matches[3]],
-                                "distance": manhattan_distance( [pattern_matches[0], pattern_matches[1]], [pattern_matches[2], pattern_matches[3]] )
                             } )
 
         beacons_set.add(`${pattern_matches[2]},${pattern_matches[3]}`);
@@ -53,34 +52,50 @@ function coverage_calculator(sensor_layout, beacons_set){
     return not_beacon.size;
 }
 
-var [sensor_list, beacons] = parse_input(input);
-console.log(sensor_list);
-
-var distances = []
-
-function tuning_freq(input){
-    const y = 4000000;
-    var not_beacon = new Set();
-    var has_beacon = new Set();
-    for(const { sensor, beacon, distance } of input){
-        if(beacon===y){
-            has_beacon.add(beacons);
+function calc_tuning_freq(sensor_layout){
+    b = 0;
+    var y = 4000000;
+    for(let row=0; row<=y; row++){
+        let ranges = [];
+        for(s of sensor_layout){
+            let radius = manhattan_distance(s["sensor"], s["beacon"]);
+            let dist = Math.abs(s["sensor"][1] - row);
+            if(dist <= radius){
+                let min_x = Math.max(0, s["sensor"][0] - (radius - dist));
+                let max_x = Math.min(y, s["sensor"][0] + (radius - dist));
+                if(ranges.length === 0){
+                    ranges.push([min_x, max_x]);
+                }
+                else{
+                    let current_range = [min_x, max_x];
+                    for(let i = ranges.length-1; i>=0; i--){
+                        if(current_range[0] <= ranges[i][1] && ranges[i][0] <= current_range[1]){
+                            current_range[0] = Math.min(current_range[0], ranges[i][0]);
+                            current_range[1] = Math.max(current_range[1], ranges[i][1]);
+                            ranges.splice(i, 1);
+                        }
+                    }
+                    ranges.push(current_range);
+                }
+            }
+            b++;
         }
-        const minDist = 0;
-        if(minDist <= dist){
-            const distancearoundSensorX = dist - minDist;
-            Foundation.add(dist);
+        b = 0;
+        if(!( ranges[0][0]===0 && ranges[0][1] === y )){
+            let result = (ranges[1][1]+1)*4000000 + row;
+            return result;
         }
-
-        if(!found){
-            console.log(x*4000000 + y);
-            return;
-        }
-
     }
+
+    return 0;
 }
 
+var [sensor_list, beacons] = parse_input(input);
 
 // Part 1
 var no_beacon_position = coverage_calculator(sensor_list, beacons);
-console.log(no_beacon_position)// 4876693
+console.log(no_beacon_position);// 4876693
+
+// Part 2
+var tuning_freq = calc_tuning_freq(sensor_list);
+console.log(tuning_freq);// 11645454855041
