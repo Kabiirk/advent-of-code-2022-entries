@@ -7,6 +7,14 @@ const input = fs
     .trim()
     .split('\n');
 
+function manhattan_distance(sensor, beacon){
+    /*
+    let 2 points be P1(x1, y1) & P2(x2, y2)
+    then manhattan_distance(P1, P2) = |x1 - x2| + |y1 - y2|
+    */
+    return Math.abs(sensor[0] - beacon[0]) + Math.abs(sensor[1] - beacon[1]);
+}
+
 function parse_input(input_strings){
     let pattern = /-?\d{1,10}/g;
 
@@ -17,21 +25,14 @@ function parse_input(input_strings){
         var pattern_matches = input_string.match(pattern).map(Number);
         sensor_layout.push( {
                                 "sensor": [pattern_matches[0], pattern_matches[1]],
-                                "beacon": [pattern_matches[2], pattern_matches[3]]
+                                "beacon": [pattern_matches[2], pattern_matches[3]],
+                                "distance": manhattan_distance( [pattern_matches[0], pattern_matches[1]], [pattern_matches[2], pattern_matches[3]] )
                             } )
 
         beacons_set.add(`${pattern_matches[2]},${pattern_matches[3]}`);
     }
 
     return [sensor_layout, beacons_set];
-}
-
-function manhattan_distance(sensor, beacon){
-    /*
-    let 2 points be P1(x1, y1) & P2(x2, y2)
-    then manhattan_distance(P1, P2) = |x1 - x2| + |y1 - y2|
-    */
-    return Math.abs(sensor[0] - beacon[0]) + Math.abs(sensor[1] - beacon[1]);
 }
 
 function coverage_calculator(sensor_layout, beacons_set){
@@ -53,6 +54,7 @@ function coverage_calculator(sensor_layout, beacons_set){
 }
 
 var [sensor_list, beacons] = parse_input(input);
+console.log(sensor_list);
 
 var distances = []
 
@@ -60,7 +62,7 @@ function tuning_freq(input){
     const y = 4000000;
     var not_beacon = new Set();
     var has_beacon = new Set();
-    for(const { sensor, beacon, manhattan_distance(sensor, beacon) } of input){
+    for(const { sensor, beacon, distance } of input){
         if(beacon===y){
             has_beacon.add(beacons);
         }
