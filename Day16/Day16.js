@@ -51,20 +51,10 @@ function parse_input(text_input){
     return [graph, rates, distance];
 }
 
-[graph, rates, distance] = parse_input(test);
-console.log(graph);
-// console.log(rates);
-/*
-dist = {
-    AA : {DD: 1, II:2, BBL3};
-    ...
-}
-*/
-
-function compress_graph(graph, rates){
-    var g = graph;
-    for(const valve in g){
-        g[valve].dist = {}
+function compress_graph(raw_graph, rates){
+    var g = raw_graph;
+    for(const valve in raw_graph){
+        g[valve].dists = {}
         if(valve !== "AA" && rates[valve]===0){ continue; }
         const visited = new Set();
         const q = [[0, valve]];
@@ -87,40 +77,39 @@ function compress_graph(graph, rates){
         }
         delete g[valve].dists[valve];
     }
+    // console.log(g);
 
     for(var valve in g){
-        delete g[valve]
+        // delete g[valve]
         if(valve !== "AA" && rates[valve]===0){
             delete g[valve];
         }
     }
 
-    console.log(g);
-    // return g;
+    return g;
 }
 
-compress_graph(graph, rates);
+function dfs(compressed_graph, start_valve, remaining_time, opened_valves, cache = {}){
+    const cache_key = `${start_valve}-${remaining_time}-${opened_valves.join(",")}`;
 
-// function bfs(graph, rates){
-//     const time = 30;
+    if(cache_key in cache){ return cache[cache_key]; }
+    const to_release = opened_valves.map(v => rates[v]).reduce((acc, r)=> acc + r, 0);
+    const max = Math.max(
+        to_release*remaining_time,
+        ...Object.entries(compressed_graph[start_valve].dists)
+        .filter(([neighbor, dist]) => remaining_time - dist - 1 > 0)
+        .filter(([neighbor, dist]) => !opened_valves.includes(neighbor))
+        .map(
+            ([neighbor, dist]) => 
+            (dist + 1)*to_release + dfs(compressed_graph, neighbor, remaining_time-dist-1, [...opened_valves, neighbor], cache)
+        )
+    )
+    cache[cache_key] = max
+    return max
+}
 
-//     // BFS
-//     const queue = [];
-
-//     var root = "AA";
-//     var flow = 0;
-//     var open_valves = [];
-
-//     queue.push(root);
-
-//     while(queue.length > 0){
-//         const current = queue.shift();
-//         if(rates[current]>0 && !graph[current]){
-//             queue.push(
-//                 {
-
-//                 }
-//             )
-//         }
-//     }
-// }
+// Part 1
+[graph, rates, distance] = parse_input(input);
+var compressed_graph = compress_graph(graph, rates);
+var res = dfs(compressed_graph, 'AA', 30, []);
+console.log(res);// 1789
