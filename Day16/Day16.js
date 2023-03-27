@@ -89,6 +89,7 @@ function compress_graph(raw_graph, rates){
     return g;
 }
 
+// Part 1
 function dfs(compressed_graph, start_valve, remaining_time, opened_valves, cache = {}){
     const cache_key = `${start_valve}-${remaining_time}-${opened_valves.join(",")}`;
 
@@ -108,8 +109,29 @@ function dfs(compressed_graph, start_valve, remaining_time, opened_valves, cache
     return max
 }
 
+// Part 2
+function dfs_2_agents(compressed_graph, start_valve, remaining_time, opened_valves, openable_valves, cache = {}){
+    const cache_key = `${start_valve}-${remaining_time}-${opened_valves.join(",")}`;
+
+    if(cache_key in cache){ return cache[cache_key]; }
+    const to_release = opened_valves.map( v => rates[v] ).reduce( (acc, r) => acc+r,0 );
+    const max = Math.max(
+        to_release*remaining_time,
+
+        ...Object.entries(compress_graph[start_valve].dists)
+        .filter( ([neighbor, dist]) => remaining_time - dist - 1 > 0 )
+        .filter( ([neighbor, dist]) => !opened_valves.includes(neighbor) && openable_valves.has(neighbor) )
+        .map( ([neigh]) )
+    )
+
+    return 0;
+}
+
 // Part 1
 [graph, rates, distance] = parse_input(input);
 var compressed_graph = compress_graph(graph, rates);
 var res = dfs(compressed_graph, 'AA', 30, []);
 console.log(res);// 1789
+
+// Part 2
+
