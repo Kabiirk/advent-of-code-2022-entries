@@ -110,28 +110,68 @@ function dfs(compressed_graph, start_valve, remaining_time, opened_valves, cache
 }
 
 // Part 2
-function dfs_2_agents(compressed_graph, start_valve, remaining_time, opened_valves, openable_valves, cache = {}){
+function dfs_two_agents(compressed_graph2, start_valve, remaining_time, opened_valves, openable_valves, cache = {}){
     const cache_key = `${start_valve}-${remaining_time}-${opened_valves.join(",")}`;
 
     if(cache_key in cache){ return cache[cache_key]; }
     const to_release = opened_valves.map( v => rates[v] ).reduce( (acc, r) => acc+r,0 );
     const max = Math.max(
         to_release*remaining_time,
-
-        ...Object.entries(compress_graph[start_valve].dists)
+        ...Object.entries(compressed_graph2[start_valve].dists)
         .filter( ([neighbor, dist]) => remaining_time - dist - 1 > 0 )
         .filter( ([neighbor, dist]) => !opened_valves.includes(neighbor) && openable_valves.has(neighbor) )
-        .map( ([neigh]) )
-    )
+        .map( ([neighbor, dist]) => 
+                (dist+1)*to_release +
+                dfs_two_agents(compressed_graph2, neighbor, remaining_time-dist-1, [...opened_valves, neighbor], openable_valves, cache)
+        )
+    );
+    cache[cache_key] = max;
+    return max;
+}
 
-    return 0;
+const range = (start, end) => Array.from(
+    Array(Math.abs(end - start) + 1), 
+    (_, i) => start + i
+  );
+
+function make_combos(l, k, indices_picked=[],acc=[]){
+    if (indices_picked.length === k) {
+      acc.push(Array.from(indices_picked).map(i => l[i]))
+    } else {
+      range(indices_picked.length > 0 ? indices_picked[indices_picked.length - 1] : 0, l.length)
+        .filter(i => !indices_picked.includes(i))
+        .forEach(i => make_combos(l, k, [...indices_picked, i], acc))
+    }
+    return acc
+  }
+
+function two_agents_traverse(compressed_graph, combos){
+    let maxPressure = 0
+    for (const agent1Valves of combos) {
+        var arr1 = Object.keys(compressed_graph).filter(valve => valve !== 'AA')
+        var arr2 = agent1Valves;
+        const agent2Valves = new Set(
+            arr1.filter(x => arr2.includes(x))
+        );
+        maxPressure = Math.max(
+            maxPressure,
+            dfs_two_agents(compressed_graph, 'AA', 26, [], new Set(agent1Valves))
+            + dfs_two_agents(graph, 'AA', 26, [], new Set(agent2Valves))
+        )
+    }
+    return maxPressure
 }
 
 // Part 1
-[graph, rates, distance] = parse_input(input);
+[graph, rates, distance] = parse_input(test);
 var compressed_graph = compress_graph(graph, rates);
-var res = dfs(compressed_graph, 'AA', 30, []);
-console.log(res);// 1789
+var most_pressure_alone = dfs(compressed_graph, 'AA', 30, []);
+console.log(most_pressure_alone);// 1789
 
 // Part 2
-
+[graph2, rates2, distance2] = parse_input(test);
+var compressed_graph2 = compress_graph(graph2, rates2);
+var traversal_combos = make_combos(Object.keys(compressed_graph2).filter( val => val !== "AA" ), 3)
+console.log(traversal_combos);
+var most_pressure_with_elephant = two_agents_traverse(compressed_graph2, traversal_combos);
+console.log(most_pressure_with_elephant);
