@@ -30,7 +30,7 @@ let valves = generate_valves_map(input);
 let start = 'AA';
 let rounds = 30;
 
-console.log(valves);
+// console.log(valves);
 
 // ----------------------------------------------------------------------------
 // ------------------------------ Functions -----------------------------------
@@ -241,6 +241,8 @@ function calc_flow(current, edge, rounds, new_calculated) {
 // than the desired length. It then does the same for the second element and
 // so on until it has generated all combinations of the desired length.
 function combinations(arr, len) {
+    console.log("arr ",arr);
+    console.log("len ",len);
     if (len === 0) return [[]];
     const result = [];
     for (let i = 0; i <= arr.length - len; i++) {
@@ -348,7 +350,7 @@ function backtrace_path(path, curr_valve, end_valve) {
     return return_path.length;
 }
 
-/*
+
 // ------------------------------- Solution -----------------------------------
 // ----------------------------------------------------------------------------
 
@@ -395,4 +397,3 @@ console.log(`Part 2 solution finished in ${delta_time / 1000}s`)
 delta_time = new Date().getTime() - _start_time;
 console.log(`Total time to run: ${delta_time / 1000} seconds`)
 // ============================================================================
-*/

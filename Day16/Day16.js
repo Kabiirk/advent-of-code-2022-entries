@@ -207,15 +207,19 @@ function two_agents_traverse(compressed_graph, combos){
 
 // Part 1
 [graph, rates, distance] = parse_input(test);
+console.log("G ",graph)
+console.log("R ",rates)
+console.log("D ",distance)
 var compressed_graph = compress_graph(graph, rates);
+console.log("CG ", compressed_graph)
 var most_pressure_alone = dfs(compressed_graph, 'AA', 30, []);
 console.log(most_pressure_alone);// 1789
 
-// Part 2
-[graph, rates, distance] = parse_input(test);
-var compressed_graph = compress_graph(graph, rates);
-// console.log(compressed_graph)
-var traversal_combos = kCombinations(Object.keys(compressed_graph).filter( val => val !== "AA" ), 7)
-// console.log(traversal_combos);
-var most_pressure_with_elephant = two_agents_traverse(compressed_graph, traversal_combos);
-console.log(most_pressure_with_elephant);
+// // Part 2
+// [graph, rates, distance] = parse_input(test);
+// var compressed_graph = compress_graph(graph, rates);
+// // console.log(compressed_graph)
+// var traversal_combos = kCombinations(Object.keys(compressed_graph).filter( val => val !== "AA" ), 7)
+// // console.log(traversal_combos);
+// var most_pressure_with_elephant = two_agents_traverse(compressed_graph, traversal_combos);
+// console.log(most_pressure_with_elephant);
