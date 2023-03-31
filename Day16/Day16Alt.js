@@ -387,6 +387,8 @@ let best_multiple_paths = find_best_multiple_paths(valves, start, rounds, 2)
 console.log(`Part 2 solution: ${best_multiple_paths}`)
 // Best time so far: 8,8s
 
+
+
 // ============================================================================
 // Timer to see how long it took to solve part 2
 delta_time = new Date().getTime() - _start_time_2;
