@@ -7,45 +7,27 @@ const input = fs
     .trim()
     .split('\n');
 
-// console.log(input);
-var test = `Valve AA has flow rate=0; tunnels lead to valves DD, II, BB
-Valve BB has flow rate=13; tunnels lead to valves CC, AA
-Valve CC has flow rate=2; tunnels lead to valves DD, BB
-Valve DD has flow rate=20; tunnels lead to valves CC, AA, EE
-Valve EE has flow rate=3; tunnels lead to valves FF, DD
-Valve FF has flow rate=0; tunnels lead to valves EE, GG
-Valve GG has flow rate=0; tunnels lead to valves FF, HH
-Valve HH has flow rate=22; tunnel leads to valve GG
-Valve II has flow rate=0; tunnels lead to valves AA, JJ
-Valve JJ has flow rate=21; tunnel leads to valve II`
-test = test.split("\n");
-
 function parse_input(text_input){
     const graph = {};
     const rates = {};
     const distance = {};
-    // var i = 1;
     for(var line of text_input){
         // Valve AW has flow rate=0; tunnels lead to valves LG, TL
         var edges = []
         try {
             var a = line.split("; tunnels lead to valves ");
-            // console.log(i, a[1].split(", "));
             edges = a[1].split(", ");
         } catch (TypeError) {
             var a = line.split("; tunnel leads to valve ");
-            // console.log(i, a[1].split(", "));
+
             edges = a[1].split(", ");
         }
-        // console.log(edges);
-        // i++;
         var pattern = /Valve (?<valve>-?\w+) has flow rate=(?<flow>-?\d+)/;
         var pattern_matches = a[0].match(pattern).groups;
-        // console.log(pattern_matches.valve, Number(pattern_matches.flow));
         graph[pattern_matches.valve] = edges;
         rates[pattern_matches.valve] = Number(pattern_matches.flow);
         distance[pattern_matches.valve] = 0;
-        // console.log(a[0]);
+
     }
 
     return [graph, rates, distance];
@@ -67,17 +49,12 @@ function compress_graph(raw_graph, rates){
             if(rates[v]>0){
                 g[valve].dists[v] = dist;
             }
-            // g[v].edges.forEach(neighbor => {
-            //     console.log(neighbor);
-            //     // q.push([dist+1, neighbor]);
-            // });
             for(var neighbor of g[v]){
                 q.push([dist+1, neighbor]);
             }
         }
         delete g[valve].dists[valve];
     }
-    // console.log(g);
 
     for(var valve in g){
         // delete g[valve]
@@ -129,50 +106,19 @@ function dfs_two_agents(compressed_graph2, start_valve, remaining_time, opened_v
     return max;
 }
 
-// const range = (start, end) => Array.from(
-//     Array(Math.abs(end - start) + 1), 
-//     (_, i) => start + i
-//   );
-function range(start, stop, step) {
-    if (typeof stop == 'undefined') {
-        // one param defined
-        stop = start;
-        start = 0;
-    }
-
-    if (typeof step == 'undefined') {
-        step = 1;
-    }
-
-    if ((step > 0 && start >= stop) || (step < 0 && start <= stop)) {
-        return [];
-    }
-
-    var result = [];
-    for (var i = start; step > 0 ? i < stop : i > stop; i += step) {
-        result.push(i);
-    }
-
-    return result;
-};
+function range(start, end){
+    var arr = Array.from(
+            Array(Math.abs(end - start) + 1), 
+            (_, i) => start + i
+        );
+    arr.pop()
+    return arr;
+}
 
 function make_combos(l, k, indices_picked=[],acc=[]){
     if (indices_picked.length === k) {
       acc.push(Array.from(indices_picked).map(i => l[i]))
     } else {
-        // if(indices_picked.length > 0){
-        //     range(indices_picked[indices_picked.length - 1])
-        //     .filter(i => !indices_picked.includes(i))
-        //     .forEach(i => make_combos(l, k, [...indices_picked, i], acc))
-        // }
-        // else{
-        //     range(0, l.length)
-        //     .filter(i => !indices_picked.includes(i))
-        //     .forEach(i => make_combos(l, k, [...indices_picked, i], acc))
-        // }
-        // var first_length = indices_picked.length > 0 ? indices_picked[indices_picked.length - 1] : 0;
-        // console.log(first_length)
-        // Array.from({first_length: l.length}, (_, i) => i).filter(i => !indices_picked.includes(i)).forEach(i => make_combos(l, k, [...indices_picked, i], acc))
       range(indices_picked.length > 0 ? indices_picked[indices_picked.length - 1] : 0, l.length)
         .filter(i => !indices_picked.includes(i))
         .forEach(i => make_combos(l, k, [...indices_picked, i], acc))
@@ -186,11 +132,6 @@ function two_agents_traverse(compressed_graph, combos){
   for (const agent1Valves of combos) {
     var arrays2 = [ Object.keys(compressed_graph).filter(valve => valve !== 'AA'), agent1Valves ]
     const agent2Valves = new Set(
-    //   _.difference(
-    //     Object.keys(graph).filter(valve => valve !== 'AA'), 
-    //     agent1Valves
-    //   )
-    // _.difference alternative in native JS
         arrays2.reduce((a, b) => a.filter(c => !b.includes(c)))
     )
     maxPressure = Math.max(
@@ -202,20 +143,12 @@ function two_agents_traverse(compressed_graph, combos){
 }
 
 // Part 1
-[graph, rates, distance] = parse_input(test);
-// console.log("G ",graph)
-// console.log("R ",rates)
-// console.log("D ",distance)
+[graph, rates, distance] = parse_input(input);
 var compressed_graph = compress_graph(graph, rates);
-// console.log("CG ", compressed_graph)
 var most_pressure_alone = dfs(compressed_graph, 'AA', 30, []);
 console.log(most_pressure_alone);// 1789
 
 // Part 2
-[graph2, rates2, distance2] = parse_input(test);
-var compressed_graph2 = compress_graph(graph2, rates2);
-console.log("CG ", compressed_graph)
-var traversal_combos = make_combos(Object.keys(compressed_graph2).filter( val => val !== "AA" ), 7)
-console.log("TC ", traversal_combos);
-var most_pressure_with_elephant = two_agents_traverse(compressed_graph2, traversal_combos);
+var traversal_combos = make_combos(Object.keys(compressed_graph).filter( val => val !== "AA" ), 7)
+var most_pressure_with_elephant = two_agents_traverse(compressed_graph, traversal_combos);
 console.log(most_pressure_with_elephant);// 2496
