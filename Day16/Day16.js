@@ -170,12 +170,12 @@ function make_combos(l, k, indices_picked=[],acc=[]){
         //     .filter(i => !indices_picked.includes(i))
         //     .forEach(i => make_combos(l, k, [...indices_picked, i], acc))
         // }
-        var first_length = indices_picked.length > 0 ? indices_picked[indices_picked.length - 1] : 0;
-        console.log(first_length)
-        Array.from({first_length: l.length}, (_, i) => i).filter(i => !indices_picked.includes(i)).forEach(i => make_combos(l, k, [...indices_picked, i], acc))
-    //   range(indices_picked.length > 0 ? indices_picked[indices_picked.length - 1] : 0, l.length)
-    //     .filter(i => !indices_picked.includes(i))
-    //     .forEach(i => make_combos(l, k, [...indices_picked, i], acc))
+        // var first_length = indices_picked.length > 0 ? indices_picked[indices_picked.length - 1] : 0;
+        // console.log(first_length)
+        // Array.from({first_length: l.length}, (_, i) => i).filter(i => !indices_picked.includes(i)).forEach(i => make_combos(l, k, [...indices_picked, i], acc))
+      range(indices_picked.length > 0 ? indices_picked[indices_picked.length - 1] : 0, l.length)
+        .filter(i => !indices_picked.includes(i))
+        .forEach(i => make_combos(l, k, [...indices_picked, i], acc))
     }
     return acc
   }
