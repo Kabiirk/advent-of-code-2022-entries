@@ -160,16 +160,19 @@ function make_combos(l, k, indices_picked=[],acc=[]){
     if (indices_picked.length === k) {
       acc.push(Array.from(indices_picked).map(i => l[i]))
     } else {
-        if(indices_picked.length > 0){
-            range(indices_picked[indices_picked.length - 1])
-            .filter(i => !indices_picked.includes(i))
-            .forEach(i => make_combos(l, k, [...indices_picked, i], acc))
-        }
-        else{
-            range(0, l.length)
-            .filter(i => !indices_picked.includes(i))
-            .forEach(i => make_combos(l, k, [...indices_picked, i], acc))
-        }
+        // if(indices_picked.length > 0){
+        //     range(indices_picked[indices_picked.length - 1])
+        //     .filter(i => !indices_picked.includes(i))
+        //     .forEach(i => make_combos(l, k, [...indices_picked, i], acc))
+        // }
+        // else{
+        //     range(0, l.length)
+        //     .filter(i => !indices_picked.includes(i))
+        //     .forEach(i => make_combos(l, k, [...indices_picked, i], acc))
+        // }
+        var first_length = indices_picked.length > 0 ? indices_picked[indices_picked.length - 1] : 0;
+        console.log(first_length)
+        Array.from({first_length: l.length}, (_, i) => i).filter(i => !indices_picked.includes(i)).forEach(i => make_combos(l, k, [...indices_picked, i], acc))
     //   range(indices_picked.length > 0 ? indices_picked[indices_picked.length - 1] : 0, l.length)
     //     .filter(i => !indices_picked.includes(i))
     //     .forEach(i => make_combos(l, k, [...indices_picked, i], acc))
@@ -177,29 +180,22 @@ function make_combos(l, k, indices_picked=[],acc=[]){
     return acc
   }
 
-function kCombinations(l, k, indicesPicked = [], acc = []) {
-    if (indicesPicked.length === k) {
-      acc.push(Array.from(indicesPicked).map(i => l[i]))
-    } else {
-      _.range(indicesPicked.length > 0 ? indicesPicked[indicesPicked.length - 1] : 0, l.length)
-        .filter(i => !indicesPicked.includes(i))
-        .forEach(i => kCombinations(l, k, [...indicesPicked, i], acc))
-    }
-    return acc
-  }
-
 function two_agents_traverse(compressed_graph, combos){
   let maxPressure = 0
+  
   for (const agent1Valves of combos) {
+    var arrays2 = [ Object.keys(compressed_graph).filter(valve => valve !== 'AA'), agent1Valves ]
     const agent2Valves = new Set(
-      _.difference(
-        Object.keys(graph).filter(valve => valve !== 'AA'), 
-        agent1Valves
-      )
+    //   _.difference(
+    //     Object.keys(graph).filter(valve => valve !== 'AA'), 
+    //     agent1Valves
+    //   )
+    // _.difference alternative in native JS
+        arrays2.reduce((a, b) => a.filter(c => !b.includes(c)))
     )
     maxPressure = Math.max(
       maxPressure,
-      dfsPart2(graph, 'AA', 26, [], new Set(agent1Valves)) + dfsPart2(graph, 'AA', 26, [], new Set(agent2Valves))
+      dfs_two_agents(graph, 'AA', 26, [], new Set(agent1Valves)) + dfs_two_agents(graph, 'AA', 26, [], new Set(agent2Valves))
     )
   }
   return maxPressure
@@ -207,19 +203,19 @@ function two_agents_traverse(compressed_graph, combos){
 
 // Part 1
 [graph, rates, distance] = parse_input(test);
-console.log("G ",graph)
-console.log("R ",rates)
-console.log("D ",distance)
+// console.log("G ",graph)
+// console.log("R ",rates)
+// console.log("D ",distance)
 var compressed_graph = compress_graph(graph, rates);
-console.log("CG ", compressed_graph)
+// console.log("CG ", compressed_graph)
 var most_pressure_alone = dfs(compressed_graph, 'AA', 30, []);
 console.log(most_pressure_alone);// 1789
 
-// // Part 2
-// [graph, rates, distance] = parse_input(test);
-// var compressed_graph = compress_graph(graph, rates);
-// // console.log(compressed_graph)
-// var traversal_combos = kCombinations(Object.keys(compressed_graph).filter( val => val !== "AA" ), 7)
-// // console.log(traversal_combos);
-// var most_pressure_with_elephant = two_agents_traverse(compressed_graph, traversal_combos);
-// console.log(most_pressure_with_elephant);
+// Part 2
+[graph2, rates2, distance2] = parse_input(test);
+var compressed_graph2 = compress_graph(graph2, rates2);
+console.log("CG ", compressed_graph)
+var traversal_combos = make_combos(Object.keys(compressed_graph2).filter( val => val !== "AA" ), 7)
+console.log("TC ", traversal_combos);
+var most_pressure_with_elephant = two_agents_traverse(compressed_graph2, traversal_combos);
+console.log(most_pressure_with_elephant);// 2496
