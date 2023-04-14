@@ -83,4 +83,22 @@ var dwayne = [
     ]
 ]
 
+function collision(block, blockx, blocky){
+    return block.some( (r, y) => {
+            return r.some( (state, x) => {
+                    return state == "#" && chamber[blocky+y][blockx+x] == "#"
+                }
+            )
+        }
+    )
+}
+
+let chamber = [["#", "#", "#", "#", "#", "#", "#", "#", "#"]]
+let segment = ["#", ".", ".", ".", ".", ".", ".", ".", "#"]
+let steps = 1000000000000;
+let numBlocks = bloks.length
+let numjets = input.length
+let topIndex = 1
+let jetIndex = 0
+
 console.log(dwayne);
