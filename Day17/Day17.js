@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const eol = require("os").EOL
 
 const input = fs
     .readFileSync(path.join(__dirname, 'input.txt'), 'utf8')
@@ -17,9 +18,9 @@ var dwayne = [
         ['.','#','.']
     ],
     [
+        ['#','#','#'],
         ['.','.','#'],
-        ['.','.','#'],
-        ['#','#','#']
+        ['.','.','#']
     ],
     [
         ['#'],
@@ -130,5 +131,5 @@ while(steps--){
 }
 
 part_2 = topIndex - 1 + mult * repeatLength;
-console.log(part_1);
-console.log(part_2);
+console.log(part_1);// 3130
+console.log(part_2);// 1556521739139
