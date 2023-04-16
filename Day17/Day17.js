@@ -7,56 +7,6 @@ const input = fs
     .trim()
     .split('')
 
-// console.log(input);
-
-
-/*
-The 5 Rocks
-
-####
-
-------
-
-.#.
-###
-.#.
-
-------
-
-..#
-..#
-###
-
-------
-
-#
-#
-#
-#
-
-------
-
-##
-##
- */
-
-// The Rock
-class Dwayne{
-    constructor(height, width, shape){
-        this.height = height;
-        this.width = width;
-        this.shape = shape;
-    }
-    toString(){
-        return this.shape
-    }
-}
-
-var test = new Dwayne(1, 4, '####');
-// console.log(test);
-
-// Alt approach
-
 var dwayne = [
     [
         ['#','#','#','#']
@@ -85,17 +35,15 @@ var dwayne = [
 
 let chamber = [["#", "#", "#", "#", "#", "#", "#", "#", "#"]]
 let segment = ["#", ".", ".", ".", ".", ".", ".", ".", "#"]
-let steps = 1000000000000;
+let steps = 1000000000000
+let blockIndex = 0
 let numBlocks = dwayne.length
 let numjets = input.length
 let topIndex = 1
 let jetIndex = 0
-let blockIndex = 0
-let repeatFound = false
-let repeatLength = 0
-let repeatNext = 0
-let repeatStep = 0
-let mult = 0
+
+var part_1 = 0;
+var part_2 = 0;
 
 function collision(block, blockX, blockY) {
     return block.some((r, y) => {
@@ -117,15 +65,19 @@ function checkRepeat() {
                 break
             }
         }
-        if (same) {
-            return len
+        if(same){
+            return len;
         }
     }
-    return -1
+
+    return -1;
 }
 
-var part_1 = 0;
-
+let repeatFound = false
+let repeatLength = 0
+let repeatNext = 0
+let repeatStep = 0
+let mult = 0
 while(steps--){
     let block = dwayne[blockIndex]
     let blockHeight = block.length
@@ -136,17 +88,18 @@ while(steps--){
     }
 
     while(true){
-        let jet = input[jetIndex++ % numjets] == "<" ? -1:1;
-        if(!collision(blockX, blockX+jet, blockY)){
+        let jet = input[jetIndex++ % numjets] == "<" ? -1:+1;
+
+        if(!collision(block, blockX+jet, blockY)){
             blockX+=jet;
         }
-        if(!collision(blockX, blockX, blockY-1)){
+        if(!collision(block, blockX, blockY-1)){
             blockY--;
         }
         else{
             block.forEach((r, y) => {
                 r.forEach((state, x) => {
-                    if (state == "#") chamber[blockY + y][blockX + x] = state
+                    if (state == "#"){ chamber[blockY + y][blockX + x] = state; }
                 })
             })
             topIndex = Math.max(blockY + blockHeight, topIndex)
@@ -170,11 +123,12 @@ while(steps--){
             steps = rest
         }
     }
-    if (1000000000000 - steps == 2022) part1 = topIndex - 1
+    if (1000000000000 - steps == 2022){
+        part_1 = topIndex - 1
+    }
     if (++blockIndex == numBlocks) blockIndex = 0
 }
 
+part_2 = topIndex - 1 + mult * repeatLength;
 console.log(part_1);
-
-
-// console.log(dwayne);
+console.log(part_2);
