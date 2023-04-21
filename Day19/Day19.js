@@ -7,7 +7,7 @@ const input = fs
     .toString()
     .trim()
     .split('\n').map(
-        (x) => JSON.parse(x.match(pattern).groups)
+        (x) => x.match(pattern).groups
     );
 
-console.log(input[0]);
+console.log(input);
