@@ -23,22 +23,12 @@ function geode_count(minutes, blueprint){
     var geode_robots = 0;
 
     for(var i = 1; i<minutes; i++){
-        ore+=1*(ore_robots);
+        ore+= ore_robots;
         // Increase resource count as per number of robots
-        clay += 1*(clay_robots);
-        obsidian += 1*(obsidian_robots);
-        geode += 1*(geode_robots);
-        console.log("=============",
-                    "minute:",i+1, "=============","\n",
-                    "Ore:", ore," ",
-                    "Ore_robot:", ore_robots,"\n",
-                    "clay:", clay," ",
-                    "clay_robot:", clay_robots,"\n",
-                    "Obsid:", obsidian," ",
-                    "Obsid_robot:", obsidian_robots,"\n",
-                    "Geode:", geode," ",
-                    "Geode_robot:", geode_robots,"\n",
-                    "=============");
+        clay += clay_robots;
+        obsidian += obsidian_robots;
+        geode += geode_robots;
+
         // Check Ore Count
         if(ore >= blueprint.robot_2_ore_cost && clay_robots<3){
             clay_robots++;
@@ -56,7 +46,19 @@ function geode_count(minutes, blueprint){
             ore -= blueprint.robot_4_ore_cost;
             obsidian -= blueprint.robot_3_obsidian_cost;
         }
+        console.log("=============",
+                        "minute:",i+1, "=============","\n",
+                        "Ore:", ore," ",
+                        "Ore_robot:", ore_robots,"\n",
+                        "clay:", clay," ",
+                        "clay_robot:", clay_robots,"\n",
+                        "Obsid:", obsidian," ",
+                        "Obsid_robot:", obsidian_robots,"\n",
+                        "Geode:", geode," ",
+                        "Geode_robot:", geode_robots,"\n",
+                        "=============");
     }
+
 
     return geode
 }
