@@ -3,7 +3,7 @@ const path = require('path');
 
 var pattern = /Blueprint (?<blueprint_no>-?\d+): Each (?<robot_1>-?\w+) robot costs (?<robot_1_ore_cost>-?\d+) ore. Each (?<robot_2>-?\w+) robot costs (?<robot_2_ore_cost>-?\d+) ore. Each (?<robot_3>-?\w+) robot costs (?<robot_3_ore_cost>-?\d+) ore and (?<robot_3_clay_cost>-?\d+) clay. Each (?<robot_4>-?\w+) robot costs (?<robot_4_ore_cost>-?\d+) ore and (?<robot_4_obsidian_cost>-?\d+) obsidian./;
 const input = fs
-    .readFileSync(path.join(__dirname, 'test.txt'), 'utf8')
+    .readFileSync(path.join(__dirname, 'input.txt'), 'utf8')
     .toString()
     .trim()
     .split('\n').map(
@@ -46,17 +46,17 @@ function geode_count(minutes, blueprint){
             ore -= blueprint.robot_4_ore_cost;
             obsidian -= blueprint.robot_3_obsidian_cost;
         }
-        console.log("=============",
-                        "minute:",i+1, "=============","\n",
-                        "Ore:", ore," ",
-                        "Ore_robot:", ore_robots,"\n",
-                        "clay:", clay," ",
-                        "clay_robot:", clay_robots,"\n",
-                        "Obsid:", obsidian," ",
-                        "Obsid_robot:", obsidian_robots,"\n",
-                        "Geode:", geode," ",
-                        "Geode_robot:", geode_robots,"\n",
-                        "=============");
+        // console.log("=============",
+        //                 "minute:",i, "=============","\n",
+        //                 "Ore:", ore," ",
+        //                 "Ore_robot:", ore_robots,"\n",
+        //                 "clay:", clay," ",
+        //                 "clay_robot:", clay_robots,"\n",
+        //                 "Obsid:", obsidian," ",
+        //                 "Obsid_robot:", obsidian_robots,"\n",
+        //                 "Geode:", geode," ",
+        //                 "Geode_robot:", geode_robots,"\n",
+        //                 "=============");
     }
 
 
@@ -65,5 +65,7 @@ function geode_count(minutes, blueprint){
 
 // console.log(input[0])
 console.log(geode_count(24, input[0]));
+console.log(geode_count(24, input[1]));
+console.log(geode_count(24, input[2]));
 
 var string = 0;
