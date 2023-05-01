@@ -33,16 +33,6 @@ function geode_count(minutes, blueprint){
     var obsidian_robots = 0;
     var geode = 0;
     var geode_robots = 0;
-    
-    // State
-    var state['ore'] = 0;
-    var state['ore_robots'] = 1;
-    var state['clay'] = 0;
-    var state['clay_robots'] = 0;
-    var state['obsidian'] = 0;
-    var state['obsidian_robots'] = 0;
-    var state['geode'] = 0;
-    var state['geode_robots'] = 0;
 
     for(var i = 1; i<minutes; i++){
         ore+= ore_robots;
