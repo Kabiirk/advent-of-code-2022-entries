@@ -83,138 +83,207 @@
 
 // Attempt 2
 
-import fs from 'fs';
-import path from 'path';
-import readline from 'readline';
+const fs = require("fs");
+const path = require('path');
+const input = fs.readFileSync(path.join(__dirname, 'input.txt'), "utf8").split("\n");
 
-const readInterface: readline.Interface = readline.createInterface({
-  input: fs.createReadStream(path.join(__dirname, 'input.txt')),
-});
-
-interface Blueprint {
-  id: number;
-  ore: State;
-  clay: State;
-  obsi: State;
-  cracker: State;
-}
-
-interface State {
-  ore: number;
-  clay: number;
-  obsi: number;
-  crack: number;
-}
-
-// Put your code here
-const onReadLine = (() => {
-  // Result-relevant temporary states and functions
-  const blueprints: Blueprint[] = [];
-  return {
-    // Callback function handling one line of the input file at a time
-    stepper: (line: string) => {
-      const splitLine = line
-        .replace(/:/g, '')
-        .split(' ')
-        .map((val) => parseInt(val));
-      blueprints.push({
-        id: splitLine[1],
-        ore: {
-          ore: -splitLine[6],
-          clay: 0,
-          obsi: 0,
-          crack: 0,
-        },
-        clay: {
-          ore: -splitLine[12],
-          clay: 0,
-          obsi: 0,
-          crack: 0,
-        },
-        obsi: {
-          ore: -splitLine[18],
-          clay: -splitLine[21],
-          obsi: 0,
-          crack: 0,
-        },
-        cracker: {
-          ore: -splitLine[27],
-          clay: 0,
-          obsi: -splitLine[30],
-          crack: 0,
-        },
-      });
-    },
-    // Finalizer callback function, creating one result based on the collected line information and temporary states
-    result: () => {
-      function mergeStates(state1: State, state2: State) {
-        state1.ore += state2.ore;
-        state1.clay += state2.clay;
-        state1.obsi += state2.obsi;
-        state1.crack += state2.crack;
-      }
-
-      function greedy(blueprint: Blueprint): number {
-        const resources: State = {
-          ore: 0,
-          clay: 0,
-          obsi: 0,
-          crack: 0,
-        };
-        const bots: State = {
-          ore: 1,
-          clay: 0,
-          obsi: 0,
-          crack: 0,
-        };
-        for (let i = 0; i < 24; i++) {
-          const toBuild: State = {
-            ore: 0,
-            clay: 0,
-            obsi: 0,
-            crack: 0,
-          };
-          if (
-            -blueprint.cracker.ore <= resources.ore &&
-            -blueprint.cracker.obsi <= resources.obsi
-          ) {
-            toBuild.crack += 1;
-            mergeStates(resources, blueprint.cracker);
-          } else if (
-            -blueprint.obsi.ore <= resources.ore &&
-            -blueprint.obsi.clay <= resources.clay
-          ) {
-            toBuild.obsi += 1;
-            mergeStates(resources, blueprint.obsi);
-          } else if (-blueprint.clay.ore <= resources.ore && Math.random() > 0.5) {
-            toBuild.clay += 1;
-            mergeStates(resources, blueprint.clay);
-          } else if (-blueprint.ore.ore <= resources.ore && Math.random() > 0.5) {
-            toBuild.ore += 1;
-            mergeStates(resources, blueprint.ore);
-          }
-          mergeStates(resources, bots);
-          mergeStates(bots, toBuild);
-        }
-        return resources.crack;
-      }
-      return blueprints
-        .map((blueprint) => {
-          let current = 0;
-          for (let i = 0; i < 100000; i++) {
-            const temp = greedy(blueprint);
-            if (temp > current) {
-              current = temp;
-            }
-          }
-          return current * blueprint.id;
-        })
-        .reduce((acc, val) => acc + val, 0);
-    },
+const blueprints = {};
+for (const line of input) {
+  const parts = line.split(" ");
+  const blueprintid = parseInt(parts[1].replace(":", ""));
+  const oreCost = parseInt(parts[6]);
+  const clayCost = parseInt(parts[12]);
+  const obsidianCostOre = parseInt(parts[18]);
+  const obsidianCostClay = parseInt(parts[21]);
+  const geodeCostOre = parseInt(parts[27]);
+  const geodeCostObsidian = parseInt(parts[30]);
+  blueprints[blueprintid] = {
+    oreCost,
+    clayCost,
+    obsidianCostOre,
+    obsidianCostClay,
+    geodeCostOre,
+    geodeCostObsidian,
   };
-})();
+}
 
-readInterface.on('line', onReadLine.stepper);
-readInterface.on('close', () => console.log(onReadLine.result()));
+class Factory {
+  blueprint = {};
+  constructor(blueprint) {
+    this.blueprint = blueprint;
+    this.ore = 0;
+    this.clay = 0;
+    this.obsidian = 0;
+    this.geode = 0;
 
+    this.oreRobots = 1;
+    this.clayRobots = 0;
+    this.obsidianRobots = 0;
+    this.geodeRobots = 0;
+    this.minute = 0;
+  }
+
+  collect() {
+    this.minute++;
+    this.ore += this.oreRobots;
+    this.clay += this.clayRobots;
+    this.obsidian += this.obsidianRobots;
+    this.geode += this.geodeRobots;
+    return this;
+  }
+  canBuildOrerobot() {
+    return this.ore >= this.blueprint.oreCost;
+  }
+
+  canBuildClayrobot() {
+    return this.ore >= this.blueprint.clayCost;
+  }
+
+  canBuildObsidianrobot() {
+    return (
+      this.ore >= this.blueprint.obsidianCostOre &&
+      this.clay >= this.blueprint.obsidianCostClay
+    );
+  }
+
+  canBuildGeoderobot() {
+    return (
+      this.ore >= this.blueprint.geodeCostOre &&
+      this.obsidian >= this.blueprint.geodeCostObsidian
+    );
+  }
+
+  buildOrerobot() {
+    this.ore -= this.blueprint.oreCost;
+    this.oreRobots++;
+
+    this.ore--;
+
+    return this;
+  }
+
+  buildClayrobot() {
+    this.ore -= this.blueprint.clayCost;
+    this.clayRobots++;
+
+    this.clay--;
+
+    return this;
+  }
+
+  buildObsidianrobot() {
+    this.ore -= this.blueprint.obsidianCostOre;
+    this.clay -= this.blueprint.obsidianCostClay;
+    this.obsidianRobots++;
+
+    this.obsidian--;
+    return this;
+  }
+
+  buildGeoderobot() {
+    this.ore -= this.blueprint.geodeCostOre;
+    this.obsidian -= this.blueprint.geodeCostObsidian;
+    this.geodeRobots++;
+
+    this.geode--;
+
+    return this;
+  }
+
+  clone() {
+    const factory = new Factory(this.blueprint);
+    factory.ore = this.ore;
+    factory.clay = this.clay;
+    factory.obsidian = this.obsidian;
+    factory.geode = this.geode;
+    factory.oreRobots = this.oreRobots;
+    factory.clayRobots = this.clayRobots;
+    factory.obsidianRobots = this.obsidianRobots;
+    factory.geodeRobots = this.geodeRobots;
+    factory.minute = this.minute;
+    return factory;
+  }
+}
+
+function getFitness(factory) {
+  const { geode } = factory;
+  const { oreRobots, clayRobots, obsidianRobots, geodeRobots } = factory;
+  const minute = factory.minute;
+  const remaining = 24 - minute;
+
+  //figure out how much future geode production we can get
+  const futureGeodes = geode + remaining * geodeRobots;
+
+  //compile that into a score
+  return (
+    futureGeodes * 10000000 +
+    obsidianRobots * 10000 +
+    clayRobots * 100 +
+    oreRobots
+  );
+}
+
+function process(blueprint) {
+  let currentGen = [new Factory(blueprint)];
+  let nextGen = [];
+  let processed = 0;
+
+  for (let gen = 0; gen < 24; gen++) {
+    //process current gen
+    for (const factory of currentGen) {
+      processed++;
+
+      /* Branching */
+
+      //build geode robots
+      if (factory.canBuildGeoderobot()) {
+        nextGen.push(factory.clone().buildGeoderobot().collect());
+      }
+      //build obsidian robots
+      if (factory.canBuildObsidianrobot()) {
+        nextGen.push(factory.clone().buildObsidianrobot().collect());
+      }
+
+      //build clay robots
+      if (factory.canBuildClayrobot()) {
+        nextGen.push(factory.clone().buildClayrobot().collect());
+      }
+
+      //build ore robots
+      if (factory.canBuildOrerobot()) {
+        nextGen.push(factory.clone().buildOrerobot().collect());
+      }
+
+      //don't build any robots
+      nextGen.push(factory.clone().collect());
+    }
+
+    //prune next gen
+    const fitnessValues = nextGen.map((factory) => getFitness(factory));
+
+    //sort by fitness
+    currentGen = nextGen
+      .map((factory, i) => ({ factory, fitness: fitnessValues[i] }))
+      .sort((a, b) => b.fitness - a.fitness)
+      .map((a) => a.factory)
+      .slice(0, 20000);
+    nextGen = [];
+  }
+
+  //sort by geodes
+  const bestFactory = currentGen.sort((a, b) => {
+    return b.geode - a.geode;
+  })[0];
+
+  return bestFactory.geode;
+}
+
+let score = 0;
+for (let i = 1; i <= input.length; i++) {
+  const geodes = process(blueprints[i]);
+  console.log(`Case #${i}: ${geodes}`);
+  score += geodes * i;
+}
+
+console.log(score);
 
