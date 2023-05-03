@@ -90,6 +90,8 @@ const input = fs.readFileSync(path.join(__dirname, 'input.txt'), "utf8").split("
 const blueprints = {};
 for (const line of input) {
   const parts = line.split(" ");
+  console.log(line)
+  console.log(parts)
   const blueprintid = parseInt(parts[1].replace(":", ""));
   const oreCost = parseInt(parts[6]);
   const clayCost = parseInt(parts[12]);
