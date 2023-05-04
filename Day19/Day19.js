@@ -90,8 +90,8 @@ const input = fs.readFileSync(path.join(__dirname, 'input.txt'), "utf8").split("
 const blueprints = {};
 for (const line of input) {
   const parts = line.split(" ");
-  console.log(line)
-  console.log(parts)
+  // console.log(line)
+  // console.log(parts)
   const blueprintid = parseInt(parts[1].replace(":", ""));
   const oreCost = parseInt(parts[6]);
   const clayCost = parseInt(parts[12]);
@@ -280,12 +280,20 @@ function process(blueprint) {
   return bestFactory.geode;
 }
 
+// Part 1
 let score = 0;
 for (let i = 1; i <= input.length; i++) {
   const geodes = process(blueprints[i]);
   console.log(`Case #${i}: ${geodes}`);
   score += geodes * i;
 }
-
 console.log(score);
 
+// Part 2
+let product = 1;
+for (let i = 1; i <= 3; i++) {
+  const geodes = process(blueprints[i]);
+  console.log(`Case #${i}: ${geodes}`);
+  product *= geodes;
+}
+console.log(product);
