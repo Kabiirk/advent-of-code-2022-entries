@@ -27,6 +27,26 @@ for (const line of input) {
   };
 }
 
+const blueprints_2 = {};
+for (const line of input) {
+  const parts = line.split(" ");
+  const blueprintid = parseInt(parts[1].replace(":", ""));
+  const oreCost = parseInt(parts[6]);
+  const clayCost = parseInt(parts[12]);
+  const obsidianCostOre = parseInt(parts[18]);
+  const obsidianCostClay = parseInt(parts[21]);
+  const geodeCostOre = parseInt(parts[27]);
+  const geodeCostObsidian = parseInt(parts[30]);
+  blueprints[blueprintid] = {
+    oreCost,
+    clayCost,
+    obsidianCostOre,
+    obsidianCostClay,
+    geodeCostOre,
+    geodeCostObsidian,
+  };
+}
+
 class Factory {
   blueprint = {};
   constructor(blueprint) {
@@ -210,7 +230,7 @@ console.log(score);
 // Part 2
 let product = 1;
 for (let i = 1; i <= 3; i++) {
-  const geodes = process(blueprints[i]);
+  const geodes = process(blueprints_2[i]);
   // console.log(`Case #${i}: ${geodes}`);
   product *= geodes;
 }
