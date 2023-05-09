@@ -199,19 +199,24 @@ function process(blueprint) {
 }
 
 // Part 1
-let score = 0;
-for (let i = 1; i <= input.length; i++) {
-  const geodes = process(blueprints[i]);
-  // console.log(`Case #${i}: ${geodes}`);
-  score += geodes * i;
-}
-console.log(score);
+// let score = 0;
+// for (let i = 1; i <= input.length; i++) {
+//   const geodes = process(blueprints[i]);
+//   // console.log(`Case #${i}: ${geodes}`);
+//   score += geodes * i;
+// }
+// console.log(score);
 
 // Part 2
 let product = 1;
 for (let i = 1; i <= 3; i++) {
   const geodes = process(blueprints[i]);
   // console.log(`Case #${i}: ${geodes}`);
-  product *= geodes;
+  if(geodes === 0){
+    continue
+  }
+  else{
+    product *= geodes;
+  }
 }
 console.log(product);
