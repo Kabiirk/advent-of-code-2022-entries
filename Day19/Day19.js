@@ -148,7 +148,7 @@ function process(blueprint) {
   let nextGen = [];
   let processed = 0;
 
-  for (let gen = 0; gen < 25; gen++) {
+  for (let gen = 0; gen < 21; gen++) {
     //process current gen
     for (const factory of currentGen) {
       processed++;
