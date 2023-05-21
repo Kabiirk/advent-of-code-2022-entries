@@ -65,6 +65,12 @@ class Factory {
       this.clay >= this.blueprint.obsidianCostClay
     );
   }
+  canBuildObsidianrobot() {
+    return (
+      this.ore >= this.blueprint.obsidianCostOre &&
+      this.clay >= this.blueprint.obsidianCostClay
+    );
+  }
 
   canBuildGeoderobot() {
     return (
@@ -200,7 +206,7 @@ function process(blueprint) {
 
 // Part 1
 let score = 0;
-for (let i = 0; i <= input.length; i++) {
+for (let i = 1; i <= input.length; i++) {
   const geodes = process(blueprints[i]);
   // console.log(`Case #${i}: ${geodes}`);
   score += geodes * i;
@@ -209,7 +215,7 @@ console.log(score);
 
 // Part 2
 let product = 1;
-for (let i = 0; i <= 3; i++) {
+for (let i = 1; i <= 3; i++) {
   const geodes = process(blueprints[i]);
   // console.log(`Case #${i}: ${geodes}`);
   product *= geodes;
