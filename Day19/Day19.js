@@ -65,12 +65,6 @@ class Factory {
       this.clay >= this.blueprint.obsidianCostClay
     );
   }
-  canBuildObsidianrobot() {
-    return (
-      this.ore >= this.blueprint.obsidianCostOre &&
-      this.clay >= this.blueprint.obsidianCostClay
-    );
-  }
 
   canBuildGeoderobot() {
     return (
